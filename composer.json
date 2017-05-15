@@ -1,6 +1,6 @@
 {
-    "name" : "snap-test-v1",
-    "description" : "SN-AP Recruitment test v1",
+    "name" : "pes-test-v1",
+    "description" : "PES test v1",
     "require" : {
         "php" : ">=5.4.0",
         "doctrine/dbal": "~2.2",
@@ -16,7 +16,7 @@
     },
     "autoload" : {
         "psr-0" : {
-            "snap" : [
+            "pes" : [
                 "src/",
                 "tests/"
             ]
