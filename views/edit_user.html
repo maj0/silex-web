@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+{% include 'header_content.html' %}
+<script>
+function formCancel() {
+//alert('form cancel');
+document.location = "{{ http_referer }}";
+}
+</script>
+<div class="container">
+<h1>Edit Uesr</h1>
+<form name="user" action="{{ user_edit }}" method="post">
+	<input type="hidden" name="id" value="{{ id }}" />
+    <table>
+	 <tr><td><lable>Name:</label><td><input type="text" name="name" value="{{ name }}" /></tr>
+	 <tr><td><lable>Address:</label><td><input type="text" name="address" value="{{ address }}" /></tr>
+	 <tr><td><lable>Email:</label><td><input type="text" name="email" value="{{ email }}" /></tr>
+	 <tr><td><lable>Phone:</label><td><input type="text" name="telephone" value="" /></tr>
+	 <tr><td><lable>Employee ID:</label><td><input type="text" name="employee_ID" value="{{ employee_ID }}" {{ employee_ID_disabled }}></tr>
+	 <tr><td><lable>Role:</label><td>
+	 <select type="text" name="role" value="{{ role }}" />
+	 {% for role in roles %}
+	 <option value="{{ role.value|e }}" {{ role.selected|e }}>{{ role.name|e }}</option>
+	 {% endfor %}
+	 </select>
+	 </tr>
+	 <tr><td><lable>Organisation ID:</label><td><input type="text" name="organisation_ID" value="{{ organisation_ID }}" {{ organisation_ID_disabled }} /></tr>
+	 <tr><td><lable>Birthdate:</label><td><input type="text" name="birthdate" value="{{ birthdate }}" /></tr>
+	 <tr><td><lable>Probation:</label><td><input type="checkbox" name="probation" value="1" {{ probation_checked }} {{ probation_disabled }}/></tr>
+	 <tr><td><lable>Password:</label><td><input type="password" name="password" value="{{ password }}" /></tr>
+	 <tr><td  nowrap="nowrap"><input type="submit" /><td><input type="reset" value="Cancel" onclick="return formCancel()"></td></tr>
+    </table>
+</form>
+</div><!-- end-container -->
+<script src="/js/validate-form.js"></script>
+{% include 'footer_content.html' %}
+</body>
+</html>

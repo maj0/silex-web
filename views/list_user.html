@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+{% include 'header_content.html' %}
+<style>
+.hidden { display:none }
+</style>
+<h1>Uesrs</h1>
+<h3>Current User: {{ last_username|e }}</h3>
+<table>
+    {% for user in users %}
+        <tr>
+		<td><a href="/user/show/{{ user.id|e }}">{{ user.name|e }}</a>&nbsp;
+		<td>
+			<a class="{{ user.hide_edit_user|e }}" href="/user/edit/{{ user.id|e }}">Edit</a>&nbsp;
+			<a class="{{ hide_delete_user|e }}" href="/user/delete/{{ user.id|e }}" onclick="return confirm('Are you sure to delete user with id {{ user.id|e }}')">Delete</a>
+    {% endfor %}
+</table>	
+<br/><a href="{{ add_user|e }}" class="{{ hide_add_user|e }}">Add User</a>&nbsp;
+<br/><a href='/organisation/add' class="{{ hide_add_organisation|e }}">Add Organisation</a>&nbsp;
+<br><a href='/organisations'>Organisations</a>
+<br/><br/><a href="{{ path('admin_logout') }}">Logout</a>
+
+{% include 'footer_content.html' %}
+
+</body>
+</html>

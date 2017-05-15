@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+{% include 'header_content.html' %}
+<h1>Login</h1>
+<br/>
+<form action="{{ path('admin_login_check') }}" method="post">
+    {{ error }}
+	<table>
+    <tr><td><lable>Username:</label><td><input type="text" name="_username" value="{{ last_username }}" />
+    <tr><td><lable>Password:</label><td><input type="password" name="_password" value="" />
+    <tr><td align=center colspan="2"><input type="submit" value="Login"/>
+	</table>
+</form>
+<br/>
+{% include 'footer_content.html' %}
+</body>
+</html>

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+{% include 'header_content.html' %}
+<script>
+function formCancel() {
+//alert('form cancel');
+document.location = "{{ http_referer }}";
+}
+</script>
+<div class="container">
+<h1>Edit Organisation</h1>
+<form action="{{ organisation_update }}" method="post">
+	<input type="hidden" name="id" value="{{ id }}" />
+    <table>
+	<tr><td><lable>Name:</label><td><input type="text" name="name" value="{{ name }}" /></tr>
+    <tr><td><lable>Address:</label><td><input type="text" name="address" value="{{ address }}" /></tr>
+	<tr><td><lable>Phone:</label><td><input type="text" name="telephone" value="{{ telephone }}" /></tr>
+	<tr><td  nowrap="nowrap"><input type="submit" /><td><input type="reset" value="Cancel" onclick="return formCancel()"></td></tr>
+	</table>
+</form>
+</div><!-- end-container -->
+<script src="/js/validate-form.js"></script>
+{% include 'footer_content.html' %}
+</body>
+</html>

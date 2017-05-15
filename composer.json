@@ -1,0 +1,30 @@
+{
+    "name" : "snap-test-v1",
+    "description" : "SN-AP Recruitment test v1",
+    "require" : {
+        "php" : ">=5.4.0",
+        "doctrine/dbal": "~2.2",
+        "symfony/security": "^3.2",
+        "twig/twig": "^2.3",
+        "symfony/twig-bridge": "^3.2",
+        "monolog/monolog": "^1.22",
+        "symfony/validator": "^3.2"
+    },
+    "require-dev" : {
+        "silex/silex" : "~2.0",
+        "phpunit/phpunit" : "~4.0"
+    },
+    "autoload" : {
+        "psr-0" : {
+            "snap" : [
+                "src/",
+                "tests/"
+            ]
+        }
+    },
+    "authors" : [{
+        "name" : "Sajid Mahmood",
+        "email" : "sm@mifon.tk",
+        "role" : "developer"
+    }]
+}
