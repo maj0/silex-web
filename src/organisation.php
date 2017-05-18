@@ -8,7 +8,7 @@ use Silex\Application;
 
 class Organisation
 {
-	public static function list(Application $app) 
+	public static function olist(Application $app) 
 	{
 		$username = $app['security.token_storage']->getToken()->getUser()->getUsername();
 		$sql = 'select * from user WHERE '. (strpos($username,'@')? 'email' : 'name') . ' = ?';
@@ -63,6 +63,13 @@ class Organisation
 	public static function show(Silex\Application $app, $id) {
 		$username = $app['security.token_storage']->getToken()->getUser()->getUsername();
 		$db_user = User::getUser($username);
+		if (empty($db_user)) {
+			$app->abort(404, "User $id does not exist.");
+		}
+		if ($id != $db_user['organisation_ID']) {
+			$app->abort(404, "Organisation not allowed.");
+		}
+		
 		$sql = 'select * from organisation WHERE id = ?;';
 		$db_org = $app['db']->fetchAssoc($sql, array((int)$id));
 		if (empty($db_org)) {
@@ -75,31 +82,40 @@ class Organisation
 		
 		$access = array(
 			'last_username' => $username,
-			'user_add' => '/user/add',
-			'hide_add_user' => '',
+			'hide_add_employee' => '',
+			'hide_add_employer' => '',
 			'hide_add_organisation' => 'hidden',
 			'hide_delete_user' => '',
 			'hide_edit_user' => '',
 			'user_type' => 'Employee',
-			);
-
+		);
+		if($db_user['role'] == User::$USER_AS_EMPLOYEE)
+		{
+			$access['hide_add_employee'] = 'hidden';
+			$access['hide_add_employer'] = 'hidden';
+		}
 		$output = '';
 		foreach ($db_employees as $id => &$user) {
 			$output .= ($id+1).')&nbsp;<a href="/user/'.$user['id'].'">'.$user['name'].'</a>&nbsp;Actions:&nbsp;';
 			$output .= "<a href='/user/".$user['id']."/edit'>Edit</a>&nbsp;";
 			$output .= "<a href='/user/".$user['id']."/delete'>Delete</a>".'<br/>';
-			if($user['role'] == User::$USER_AS_EMPLOYEE)
+			
+			$user['hide_delete_user'] = '';
+			$user['hide_edit_user'] = '';
+			$user['type'] = 'employer';
+
+
+			if($db_user['role'] == User::$USER_AS_EMPLOYEE)
 			{
-				$user['hide_add_user'] = 'hidden';
 				$user['hide_delete_user'] = 'hidden';
 				$user['hide_edit_user'] = 'hidden';
+			}
+			if($user['id'] == $db_user['id']) // only self edit
+			{
+				$user['hide_edit_user'] = '';
 				$user['type'] = 'employee';
 			}
-			else // as Employer
-			{
-				$user['type'] = 'employer';
-				$user['add_user'] = '/organisation/employer/add/'.$user['organisation_ID'];
-			}
+			//if(empty($id)) echo "<pre>",print_r($user,1),"</pre><br>\n";
 		}
 		if($output) $output = "Employees:<br/>\n$output";
 
@@ -122,8 +138,20 @@ class Organisation
 	 */
 	public static function add(Request $req, Application $app) {
 		if($req->getMethod() == 'GET') {
-			$user = array('organisation_add' => '/organisation/add');
-			return $app['twig']->render('add_organisation.html', $user);
+			$username = $app['security.token_storage']->getToken()->getUser()->getUsername();
+			$db_user = User::getUser($username);
+			if (empty($db_user)) {
+				$app->abort(404, "User $username does not exist.");
+			}
+			$access = array(
+				'last_username' => $username,
+				'organisation_add' => '/organisation/add',
+				'hide_add_user' => '',
+				'hide_add_organisation' => 'hidden',
+				'hide_delete_user' => '',
+				'hide_edit_user' => '',
+			);
+			return $app['twig']->render('add_organisation.html', $access);
 		} else {
 			return self::do_add($req, $app);
 		}
@@ -338,6 +366,9 @@ class Organisation
 			if (empty($db_user)) {
 				$app->abort(404, "User $id does not exist.");
 			}
+
+			//echo "<pre>",print_r($_SERVER,1),"</pre>\n";
+			if(empty($_SERVER['HTTP_REFERER'])) $_SERVER['HTTP_REFERER'] = '/users';
 			$access = array(
 				'last_username' => $username,
 				'user_add' => '/user/add',
@@ -359,6 +390,9 @@ class Organisation
 			//echo '<pre>'.print_r($db_user,1).'</pre>';
 			if (empty($edit_user)) {
 				$app->abort(404, "User $id does not exist.");
+			}
+			if ($db_user['role'] != User::$USER_AS_ADMIN && $edit_user['organisation_ID'] != $db_user['organisation_ID']) {
+				$app->abort(404, "User $id not allowed.");
 			}
 			$user = $edit_user;
 			// by default enable all fields

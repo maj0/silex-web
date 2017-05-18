@@ -11,7 +11,7 @@ class User
 	public static $USER_AS_EMPLOYER = 2;
 	public static $USER_AS_EMPLOYEE = 3;
 	
-	public static function list(Application $app) {
+	public static function ulist(Application $app) {
 		$username = $app['security.token_storage']->getToken()->getUser()->getUsername();
 		$db_user = self::getUser($username);
 		//echo '<pre>'.print_r($db_user,1).'</pre>';
@@ -30,40 +30,42 @@ class User
 			);
 
 		$output = '';
-		$user = $db_user;
-		if($user['role'] == User::$USER_AS_ADMIN)
+		if($db_user['role'] == User::$USER_AS_ADMIN)
 		{
 			$sql = 'select * from user;';
 			$db_users = $app['db']->fetchAll($sql);
 			$access['hide_add_organisation'] = '';
 			$access['add_user'] = '/user/add';
-		} else {
+		} else { // employee or employer
 			$sql = 'select * from user WHERE organisation_ID = ?;';
-			$db_users = $app['db']->fetchAll($sql, array((int)$user['organisation_ID']));
-			if($user['role'] == User::$USER_AS_EMPLOYEE)
+			$db_users = $app['db']->fetchAll($sql, array((int)$db_user['organisation_ID']));
+			$access['hide_add_user'] = 'hidden';
+			if($db_user['role'] == User::$USER_AS_EMPLOYEE)
 			{
-				$access['hide_add_user'] = 'hidden';
 				$access['hide_delete_user'] = 'hidden';
 				$access['hide_edit_user'] = 'hidden';
 			}
 			else // as Employer
 			{
-				$access['add_user'] = '/organisation/employee/add/'.$user['organisation_ID'];
+				$access['add_user'] = '/organisation/employee/add/'.$db_user['organisation_ID'];
 			}
 		}
 
 		//$output .= '<pre>'.print_r($db_users,1).'</pre>';
 		// manage visibilty of actions for each user here
-		foreach ($db_users as &$db_user) {
+		foreach ($db_users as &$user) {
 			//$output .= '<a href="/user/show/'.$db_user['id'].'">'.$db_user['name'].'</a>';
 			//$output .= '<br/>';
-			if($db_user['id'] == $user['id'])
+			$user['hide_add_user'] = $access['hide_add_user'];
+			$user['hide_delete_user'] = $access['hide_delete_user'];
+			$user['hide_edit_user'] = $access['hide_edit_user'];
+			if($user['id'] == $db_user['id'])
 			{
-				$db_user['hide_edit_user'] = '';
+				$user['hide_edit_user'] = '';
 			}
 			else
 			{
-				$db_user['hide_edit_user'] = $access['hide_edit_user'];
+				$user['hide_edit_user'] = $access['hide_edit_user'];
 			}
 		}
 		$access['users'] = &$db_users;
@@ -75,10 +77,16 @@ class User
 	*/
 	public static function show(Application $app, $id) {
 		$username = $app['security.token_storage']->getToken()->getUser()->getUsername();
-		$db_user = self::getUser($username);
+		$user = self::getUser($username);
+		//echo '<pre>'.print_r($db_user,1).'</pre>';
+		
+		$db_user = self::getUser($id);
 		//echo '<pre>'.print_r($db_user,1).'</pre>';
 		if (empty($db_user)) {
 			$app->abort(404, "User $id does not exist.");
+		}
+		if ($user['role'] != User::$USER_AS_ADMIN && $user['organisation_ID'] != $db_user['organisation_ID']) {
+			$app->abort(404, "User $id not allowed.");
 		}
 
 		$access = $db_user;

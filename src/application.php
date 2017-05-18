@@ -7,6 +7,10 @@ use Symfony\Component\Security\Core\Encoder\PlaintextPasswordEncoder;
 
 class Silex_Application extends Silex\Application
 {
+	/*public function abort($statusCode, $message = '', array $headers = array())
+	{
+		die($message);
+	}*/
 	public static function instance()
 	{
 		static $app;

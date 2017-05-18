@@ -1,13 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-{% include 'header_content.html' %}
 <script>
 function formCancel() {
 //alert('form cancel');
 document.location = "{{ http_referer }}";
 }
 </script>
-<div class="container">
 <h1>Edit Uesr</h1>
 <form name="user" action="{{ user_edit }}" method="post">
 	<input type="hidden" name="id" value="{{ id }}" />
@@ -31,8 +27,3 @@ document.location = "{{ http_referer }}";
 	 <tr><td  nowrap="nowrap"><input type="submit" /><td><input type="reset" value="Cancel" onclick="return formCancel()"></td></tr>
     </table>
 </form>
-</div><!-- end-container -->
-<script src="/js/validate-form.js"></script>
-{% include 'footer_content.html' %}
-</body>
-</html>

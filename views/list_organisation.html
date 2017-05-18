@@ -1,11 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
-
-{% include 'header_content.html' %}
-
-<style>
-.hidden { display:none }
-</style>
 <h1>Organisations</h1>
 <h2>User:{{ last_username|e }}</h2>
 <table>
@@ -20,8 +12,3 @@
 <br/><a href='/organisation/add' class="{{ hide_add_organisation|e }}">Add Organisation</a>&nbsp;	
 <br/><a href='/users'>Users</a>
 <br/><br/><a href="{{ path('admin_logout') }}">Logout</a>
-
-{% include 'footer_content.html' %}
-
-</body>
-</html>

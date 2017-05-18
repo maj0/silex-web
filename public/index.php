@@ -21,7 +21,7 @@ $app->get('/login', 'Silex_Application::login');
 	return "Hello login_check";
 });*/
 
-$app->get('/organisations', 'Organisation::list');
+$app->get('/organisations', 'Organisation::olist');
 $app->match('/organisation/add', 'Organisation::add');
 $app->get('/organisation/show/{id}', 'Organisation::show');
 $app->match("/organisation/edit/{id}", 'Organisation::edit');
@@ -34,7 +34,7 @@ $app->match('/organisation/employer/edit/{id}', /*function(Request $req, $id) us
 $app->match('/organisation/employee/edit/{id}', 'Organisation::edit_employee'/*($req, $app, $id);}*/);
 $app->get("/organisation/delete/{id}", 'Organisation::delete');
 
-$app->get('/users', 'User::list');
+$app->get('/users', 'User::ulist');
 $app->get('/user/show/{id}', 'User::show');
 $app->match('/user/add', 'User::add_user');
 $app->match("/user/edit/{id}", 'Organisation::edit_employee');
@@ -49,4 +49,51 @@ $app->get('/js/{scriptName}', function($scriptName) {
 	return file_get_contents(__DIR__.'/../views/js/'.$scriptName);
 }); // define script action
 
+
+$app->error(function (\Exception $e, Request $request, $code) use ($app) {
+
+    if ($app['debug']) {
+
+        return;
+
+    }
+
+
+
+    // 404.html, or 40x.html, or 4xx.html, or error.html
+
+    $templates = array(
+
+        'errors/'.$code.'.html.twig',
+
+        'errors/'.substr($code, 0, 2).'x.html.twig',
+
+        'errors/'.substr($code, 0, 1).'xx.html.twig',
+
+        'errors/default.html.twig',
+
+    );
+
+
+
+    return new Response($app['twig']->resolveTemplate($templates)->render(array('code' => $code)), $code);
+
+});
+
+$app->after(function (Request $request, Response $response) {
+    //echo "<p>AFTER1</p>".$response->getContent()."<p>AFTER2</p>";
+	//var_dump($response);
+	$app = Silex_Application::instance();
+	$token = $app['security.token_storage']->getToken();
+	$user = empty($token) ? '' : $token->getUser();
+	$username = is_object($user) ? $user->getUsername() : $user;			
+	$access = array(
+		'last_username' => $username,
+	);
+	$content = $response->getContent();
+	$header = $app['twig']->render('page_start.html', $access);
+	$footer = $app['twig']->render('page_end.html', $access);
+	//echo "<pre>new_content=".$new_conent."</pre><br/>\n";
+	$response->setContent($header.$content.$footer);
+});
 $app->run();

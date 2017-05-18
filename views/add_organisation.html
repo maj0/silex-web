@@ -1,13 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-{% include 'header_content.html' %}
 <script>
 function formCancel() {
 //alert('form cancel');
 document.location = '/organisations';
 }
-</script>
-<div class="container">
 <h1>Add Organisation</h1>
 <form name="organisation" action="{{ organisation_add }}" method="post">
     <table>
@@ -17,8 +12,3 @@ document.location = '/organisations';
 	 <tr><td  nowrap="nowrap"><input type="submit" /><td><input type="reset" value="Cancel" onclick="return formCancel()"></td></tr>
 	</table>
 </form>
-</div><!-- end-container -->
-<script src="/js/validate-form.js"></script>
-{% include 'footer_content.html' %}
-</body>
-</html>
