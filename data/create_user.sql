@@ -5,12 +5,14 @@ CREATE TABLE IF NOT EXISTS user (
    email varchar(100) NOT NULL,
    password varchar(100) NOT NULL,
    employee_ID varchar(20) default NULL,
-   role tinyint(1) UNSIGNED NOT NULL,
-   organisation_ID tinyint(1) UNSIGNED default NULL,
+   role tinyint(1) NOT NULL,
+   organisation_ID INT(11) default NULL,
    birthdate date default NULL,
    probation bool default false,
    telephone varchar(20) default NULL,
-   PRIMARY KEY (id)
+   PRIMARY KEY (id),
+   UNIQUE KEY (email),
+   FOREIGN KEY (organisation_ID) REFERENCES organisation(id) ON DELETE RESTRICT ON UPDATE RESTRICT
 );
 INSERT INTO user (name, email,password,role,probation)  VALUES  
 	('admin', 'admin@mifon.tk', 'A1b2c#d0',1,false),

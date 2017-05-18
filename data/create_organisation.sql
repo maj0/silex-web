@@ -3,7 +3,8 @@ CREATE TABLE IF NOT EXISTS organisation (
    name varchar(100) NOT NULL,
    address varchar(100) NOT NULL,
    telephone varchar(20) default NULL,
-   PRIMARY KEY (id)
+   PRIMARY KEY (id),
+   UNIQUE KEY (name)
 );
 INSERT INTO organisation (name,address,telephone)  VALUES  
 	('Simcon GmbH', 'Leopoldstr. 230,D-80807,Munich,Germany','+49-89-99953947'),
