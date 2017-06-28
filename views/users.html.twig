@@ -1,0 +1,9 @@
+<table>
+    {% for user in users %}
+        <tr>
+		<td><a href="{{uribase}}/show/{{ user.id|e }}">{{ user.name|e }}</a>&nbsp;
+		<td>
+			<a class="{{ user.hide_edit_user|e }}" href="{{uribase}}/edit/{{ user.id|e }}">Edit</a>&nbsp;
+			<a class="{{ user.hide_delete_user|e }}" href="{{uribase}}/delete/{{ user.id|e }}">Delete</a>
+    {% endfor %}
+</table>

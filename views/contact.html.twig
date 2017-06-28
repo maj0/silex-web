@@ -1,0 +1,30 @@
+<div id="main" role="main" class="container">
+    <h2>Contact</h2>
+	{% set alertTypeAvaillable = [ 'info', 'success', 'warning', 'error'] %}
+	{% for alert in alertTypeAvaillable %}
+		{% for message in app.session.getFlashBag.get(alert) %}
+			<div class="alert alert-{{ alert }}" >
+				<button class="close" data-dismiss="alert">×</button>
+				{{ message|trans }}
+			</div>
+		{% endfor %}
+	{% endfor %}
+
+	<form class="form-horizontal" method="post">
+ <fieldset class="control-group">
+<!--
+                  {{ form_errors(form) }}
+                  {{ form_row(form.name) }}
+                  {{ form_row(form.surname) }}
+                  {{ form_row(form.email) }}
+                  {{ form_row(form.message) }}
+-->
+	  <div class="control-group"><label class=" required" for="form_name">Name</label><div class="controls"><input type="text" id="form_name" name="form[name]" required="required" /></div></div>
+	  <div class="control-group"><label class=" required" for="form_surname">Surname</label><div class="controls"><input type="text" id="form_surname" name="form[surname]" required="required" /></div></div>
+	  <div class="control-group"><label class=" required" for="form_email">Email</label><div class="controls"><input type="email" id="form_email" name="form[email]" required="required" /></div></div>
+	  <div class="control-group"><label class=" required" for="form_message">Message</label><div class="controls"><textarea id="form_message" name="form[message]" required="required"></textarea></div></div>
+    <button type="submit" class="btn btn-info">Send</button>
+
+ </fieldset>
+</form>
+</div><!-- end-container -->

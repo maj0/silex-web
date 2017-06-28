@@ -1,0 +1,11 @@
+<script>
+function formCancel() {
+//alert('form cancel');
+document.location = "{{ _SERVER.HTTP_REFERER }}"
+}
+</script>
+
+{% include 'common/form_search.html.twig' %}
+
+</div><!-- end-container -->
+<script src="/js/validate-form.js"></script>

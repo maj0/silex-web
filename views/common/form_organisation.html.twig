@@ -1,0 +1,28 @@
+<div id="main" role="main" class="container">
+	{% set alertTypeAvaillable = [ 'info', 'success', 'warning', 'error'] %}
+	{% for alert in alertTypeAvaillable %}
+		{% for message in app.session.getFlashBag.get(alert) %}
+			<div class="alert alert-{{ alert }}" >
+				<button class="close" data-dismiss="alert">×</button>
+				{{ message|trans }}
+			</div>
+		{% endfor %}
+	{% endfor %}
+
+<form name="organisation" method="post">
+ <div id="organisation">
+  <div class="control-group">
+   <label class="control-label required" for="organisation_name">Name</label>
+   <div class="controls"><input type="text" id="organisation_name" name="organisation[name]" value="{{ organisation.name }}" required="required"/></div></div>
+  <div class="control-group">
+   <label class="control-label required" for="organisation_address">Address</label><div class="controls"><textarea id="organisation_address" name="organisation[address]" required="required">{{ organisation.address }}</textarea></div></div>
+  <div class="control-group">
+   <label class="control-label" for="organisation_telephone">Telephone</label>
+   <div class="controls"><input type="text" id="organisation_telephone" name="organisation[telephone]" value="{{ organisation.telephone }}"/></div></div>
+  <div>
+   <button type="submit" id="organisation_save" name="organisation[save]">Save</button>
+   <!--button type="reset" id="organisation_save" name="organisation[cancel]" onclick="return formCancel()">Cancel</button-->
+  </div>
+ </div>
+</form>
+</div>

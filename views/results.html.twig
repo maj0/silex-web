@@ -1,0 +1,19 @@
+<div id="main" role="main" class="container">
+	{% set alertTypeAvaillable = [ 'info', 'success', 'warning', 'error'] %}
+	{% for alert in alertTypeAvaillable %}
+		{% for message in app.session.getFlashBag.get(alert) %}
+			<div class="alert alert-{{ alert }}" >
+				<button class="close" data-dismiss="alert">×</button>
+				{{ message|trans }}
+			</div>
+		{% endfor %}
+	{% endfor %}
+
+<h1>Search Results</h1>
+<table>
+    {% for organisation in results %}
+        <tr>
+		<td><a href="/{{ organisation.type|e }}/show/{{ organisation.id|e }}">{{ organisation.name|e }}</a>&nbsp;
+    {% endfor %}
+</table>
+</div><!-- end container -->

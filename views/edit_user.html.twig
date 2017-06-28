@@ -1,0 +1,7 @@
+<script>
+function formCancel() {
+//alert('form cancel');
+document.location = "{{ _SERVER.HTTP_REFERER|e }}";
+}
+</script>
+{% include 'common/form_user.html.twig' %}

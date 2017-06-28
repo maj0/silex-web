@@ -1,0 +1,14 @@
+<h1>{{ type_oper }} {{ type_user }}:</h1>
+<table>
+<tr><td><lable>Name:</label><td><input type="text" name="name" value="{{ user.name }}" /></tr>
+<tr><td><lable>Address:</label><td><input type="text" name="address" value="{{ user.address }}" /></tr>
+<tr><td><lable>Email:</label><td><input type="text" name="email" value="{{ user.email }}" /></tr>
+<tr><td><lable>Phone:</label><td><input type="text" name="telephone" value="" /></tr>
+<tr><td><lable>Employee ID:</label><td><input type="text" name="employee_ID" value="{{ user.employee_ID|e }}" {{ user.employee_ID_readonly }}></tr>
+<tr><td><lable>Role:</label><td><input type="text" name="role" value="{{ user.role }}" {{ user.role_readonly }}/></tr>
+<tr><td><lable>Organisation ID:</label><td><input type="text" name="organisation_ID" value="{{ user.organisation_ID }}" {{ user.organisation_ID_readonly }} /></tr>
+<tr><td><lable>Birthdate:</label><td><input type="text" name="birthdate" value="{{ user.birthdate }}" /></tr>
+<tr><td><lable>Probation:</label><td><input type="checkbox" name="probation" value="{{ user.probation }}" {{ user.probation_readonly }}/></tr>
+<tr><td><lable>Password:</label><td><input type="password" name="password" value="{{ user.password }}"/></tr>
+</table>
+<br/>
