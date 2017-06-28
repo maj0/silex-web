@@ -1,9 +1,0 @@
-<table>
-    {% for user in users %}
-        <tr>
-		<td><a href="/user/show/{{ user.id|e }}">{{ user.name|e }}</a>&nbsp;
-		<td>
-			<a class="{{ user.hide_edit_user|e }}" href="/user/edit/{{ user.id|e }}">Edit</a>&nbsp;
-			<a class="{{ user.hide_delete_user|e }}" href="/user/delete/{{ user.id|e }}" onclick="return confirm('Are you sure to delete user with id {{ user.id|e }}')">Delete</a>
-    {% endfor %}
-</table>
