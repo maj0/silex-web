@@ -24,9 +24,9 @@ class UserType extends AbstractType
                 'constraints' => new Assert\NotBlank(),
             ))
             ->add('telephone')
-            ->add('employee_ID')
+            ->add('employeeID')
             ->add('role')
-            ->add('organisation_ID')
+            ->add('organisationID')
             ->add('birthdate')
             ->add('probation', Type\CheckboxType::class, array(
                 'required' => false,

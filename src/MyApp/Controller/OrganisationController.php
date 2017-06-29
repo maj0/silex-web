@@ -67,12 +67,12 @@ class OrganisationController implements ControllerProviderInterface
 
         $access['users'] = array(); // empty users for add organisation
         if ($oid) {
-            if (($db_user['role'] != ROLE_IS_ADMIN && $db_user['organisation_ID'] != $oid)) {
+            if (($db_user['role'] != ROLE_IS_ADMIN && $db_user['organisationID'] != $oid)) {
                 $app->abort(404, "Organisation $oid not allowed.");
             }
             $organisation = $app['repository.organisation']->find($oid);
             $access['organisation'] = $organisation;
-            $where = array("organisation_ID = $oid");
+            $where = array("organisationID = $oid");
             $where[] = "is_deleted != 1"; // get all record which are not marked deleted
             $users = $app['repository.user']->findAll($limit, $offset, $where);
             //$users = $organisations;
@@ -88,8 +88,8 @@ class OrganisationController implements ControllerProviderInterface
             $access['uribase'] = "/organisation/$oid/employee";
         } else {
             $where = array('is_deleted != 1');// get all record which are not marked deleted
-            if (!empty($db_user['organisation_ID'])) {
-                $where[] = "id={$db_user['organisation_ID']}";
+            if (!empty($db_user['organisationID'])) {
+                $where[] = "id={$db_user['organisationID']}";
                 $access['hide_add_organisation'] = 'hidden';
                 $access['hide_delete_organisation'] = 'hidden';
                 $access['user_type'] = 'Empoloyee';
@@ -217,7 +217,7 @@ class OrganisationController implements ControllerProviderInterface
             }
             $access['type_oper'] = 'Delete';
             $access['type_organisation'] = 'Organisation Details';
-            $access['organisation_ID'] = $id;
+            $access['organisationID'] = $id;
             $access['organisation'] = $app['repository.organisation']->find($id);
             $access['organisation_delete'] = '/organisation/delete/'.$id;
             $access['title'] = "Delete Organisation";
@@ -247,7 +247,7 @@ class OrganisationController implements ControllerProviderInterface
         $access = self::access($req, $app, $id);
         $access['type_oper'] = 'Show';
         $access['type_organisation'] = 'Organisation Details';
-        $access['organisation_ID'] = $id;
+        $access['organisationID'] = $id;
 
         //echo "<pre>",print_r($_SERVER, 1),"</pre><br>\n";
         return $app['twig']->render('organisation.html.twig', $app['app.access'] = $access);

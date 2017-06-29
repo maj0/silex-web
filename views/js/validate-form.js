@@ -64,7 +64,7 @@ $(function() {
     submitHandler: function(form) {
 	  if(1<$('select[name=role]').val())
 	  {
-		  var val = $('input[name=organisation_ID]').val();
+		  var val = $('input[name=organisationID]').val();
 		  //alert('Organisation ID is empty,val='+val);
 		  if(val=='')
 		  {
@@ -75,17 +75,17 @@ $(function() {
       form.submit();
     }
   });
-  jQuery.validator.addMethod("organisation_ID", function(value, element) {
+  jQuery.validator.addMethod("organisationID", function(value, element) {
   // allow any non-whitespace characters as the host part
 	if(1<$("select[name=role]").val())
 	{
-		//var val = $('input[name=organisation_ID]').val();
+		//var val = $('input[name=organisationID]').val();
 		if(value=='') return false;
 	}
   	//alert('Organisation ID is empty,val='+value);
 	if(value.length<1) return false;
 	return true;
-}, "Please provide a valid organisation_ID");
+}, "Please provide a valid organisationID");
   jQuery.validator.addMethod("password", function(value, element) {
   // allow any non-whitespace characters as the host part
   if(value.length<6) return false;

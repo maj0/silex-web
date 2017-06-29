@@ -111,11 +111,11 @@ class SilexApplication extends \Silex\Application
                 return new Repository\SearchRepository($app['db']);
             };
             $app['app.access'] = array('active' => 'homepage');
-			
-			// mailgun options
-			$app['mailgun.options'] = $new_config('mailgun.options', array(
-				'APIKEY' => 'PUTYOUR-KEY-IN-CONFIG-FILE',
-			));
+            
+            // mailgun options
+            $app['mailgun.options'] = $new_config('mailgun.options', array(
+                'APIKEY' => 'PUTYOUR-KEY-IN-CONFIG-FILE',
+            ));
         } // end-if empty $app
         return $app;
     } // end-function
@@ -163,21 +163,5 @@ class SilexApplication extends \Silex\Application
         );
 
         return $app['twig']->render('about.html.twig', $app['app.access'] = array_merge($app['app.access'], $access));
-    } // end-about function
-	
-    public static function info(SilexApplication $app)
-    {
-        $token = $app['security.token_storage']->getToken();
-        $user = $token->getUser();
-        $username = is_object($user) ? $user->getUsername() : $user;
-        $access = array(
-            'last_username' => $username,
-            'header_content' => __DIR__.'/../../views/header_content.html',
-            'footer_content' => __DIR__.'/../../views/footer_content.html',
-            'active' => 'about',
-        );
-		
-		echo "<pre>",print_r($_SERVER,1),"</pre><br/>\n";
-        return $app['twig']->render('info.html.twig', $app['app.access'] = array_merge($app['app.access'], $access));
     } // end-about function
 }  // end-application

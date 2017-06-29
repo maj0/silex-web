@@ -34,7 +34,7 @@ class UserRepository implements RepositoryInterface
             'password' => $user->getPassword(),
             'probation' => $user->getProbation() ? 1 : 0,
         );
-        foreach (explode(' ', 'address employee_ID organisation_ID birthdate') as $k) {
+        foreach (explode(' ', 'address employeeID organisationID birthdate') as $k) {
             //if(!empty($_REQUEST[$k]))
             $val = call_user_func(array($user,'get'.ucfirst($k)));
             if (!empty($val)) {
@@ -153,15 +153,15 @@ class UserRepository implements RepositoryInterface
         $user->setEmail($userData['email']);
         $user->setAddress($userData['address']);
         $user->setTelephone($userData['telephone']);
-        $user->setEmployeeID($userData['employee_ID']);
+        $user->setEmployeeID($userData['employeeID']);
         $user->setRole($userData['role']);
-        $user->setOrganisationID($userData['organisation_ID']);
+        $user->setOrganisationID($userData['organisationID']);
         $user->setBirthdate($userData['birthdate']);
         $user->setProbation($userData['probation']);
         $user->setPassword($userData['password']);
 
         $user['hide_edit_user'] = $user['hide_delete_user'] = '';
-        $text = 'name email address password role employee_ID organisation_ID birthdate probation telephone';
+        $text = 'name email address password role employeeID organisationID birthdate probation telephone';
         foreach (explode(' ', $text) as $key) {
             $user["{$key}_readonly"] = '';
         }

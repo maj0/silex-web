@@ -12,7 +12,7 @@ document.location = "{{ _SERVER.HTTP_REFERER }}";
 	 <tr><td><lable>Address:</label><td><input type="text" name="address" value="{{ user.address }}" /></tr>
 	 <tr><td><lable>Email:</label><td><input type="text" name="email" value="{{ user.email }}" /></tr>
 	 <tr><td><lable>Phone:</label><td><input type="text" name="telephone" value="{{ user.telephone }}" /></tr>
-	 <tr><td><lable>Employee ID:</label><td><input type="text" name="employee_ID" value="{{ user.employee_ID }}" {{ user.employee_ID_readonly }}></tr>
+	 <tr><td><lable>Employee ID:</label><td><input type="text" name="employeeID" value="{{ user.employeeID }}" {{ user.employeeID_readonly }}></tr>
 	 <tr><td><lable>Role:</label><td>
 	 <select type="text" name="role" value="{{ user.role }}" />
 	 {% for role in roles %}
@@ -20,7 +20,7 @@ document.location = "{{ _SERVER.HTTP_REFERER }}";
 	 {% endfor %}
 	 </select>
 	 </tr>
-	 <tr><td><lable>Organisation ID:</label><td><input type="text" name="organisation_ID" value="{{ user.organisation_ID }}" {{ user.organisation_ID_readonly }} /></tr>
+	 <tr><td><lable>Organisation ID:</label><td><input type="text" name="organisationID" value="{{ user.organisationID }}" {{ user.organisationID_readonly }} /></tr>
 	 <tr><td><lable>Birthdate:</label><td><input type="text" name="birthdate" value="{{ user.birthdate }}" /></tr>
 	 <tr><td><lable>Probation:</label><td><input type="checkbox" name="probation" value="1" {{ user.probation_checked }} {{ user.probation_readonly }}/></tr>
 	 <tr><td><lable>Password:</label><td><input type="password" name="password" value="{{ user.password }}" /></tr>

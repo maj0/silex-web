@@ -45,7 +45,7 @@ class User extends GenericEntity
      *
      * @var string
      */
-    protected $employee_ID;
+    protected $employeeID;
 
     /**
      * User role ID.
@@ -59,7 +59,7 @@ class User extends GenericEntity
      *
      * @var string
      */
-    protected $organisation_ID;
+    protected $organisationID;
 
     /**
      * User birthdate.
@@ -135,43 +135,24 @@ class User extends GenericEntity
 
     public function getEmployeeID()
     {
-        return $this->employee_ID;
-    }
-    public function getEmployee_ID()
-    {
-        return $this->employee_ID;
+        return $this->employeeID;
     }
 
-    public function setEmployeeID($employee_ID)
+    public function setEmployeeID($employeeID)
     {
-        $this->employee_ID = $this['employee_ID'] = $employee_ID;
-    }
-    
-    public function setEmployee_ID($employee_ID)
-    {
-        $this->employee_ID = $this['employee_ID'] = $employee_ID;
+        $this->employeeID = $employeeID;
     }
     
     public function getOrganisationID()
     {
-        return $this->organisation_ID;
+        return $this->organisationID;
     }
     
-    public function getOrganisation_ID()
+    public function setOrganisationID($organisationID)
     {
-        return $this->organisation_ID;
-    }
-
-    public function setOrganisationID($organisation_ID)
-    {
-        $this->organisation_ID = $this['organisation_ID'] = $organisation_ID;
+        $this->organisationID = $organisationID;
     }
     
-    public function setOrganisation_ID($organisation_ID)
-    {
-        $this->organisation_ID = $this['organisation_ID'] = $organisation_ID;
-    }
-
     public function getRole()
     {
         return $this->role;

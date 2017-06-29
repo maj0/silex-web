@@ -31,8 +31,8 @@ class SearchController implements ControllerProviderInterface
             'error'         => $app['security.last_error']($req),
             'last_username' => $app['session']->get('_security.last_username'),
             'user_type' => 'User', 'user_add' => '/user/add', 'hide_add_user' => '',
-            'organisation_ID_readonly' => '',
-            'last_organisation_ID' => '',
+            'organisationID_readonly' => '',
+            'last_organisationID' => '',
             'active' => 'search',
         );
         

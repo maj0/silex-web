@@ -62,8 +62,8 @@ class UserController implements ControllerProviderInterface
             'error'         => $app['security.last_error']($req),
             'last_username' => $app['session']->get('_security.last_username'),
             'user_type' => 'User','user_add' => '/user/add','hide_add_user' => '',
-            'organisation_ID_readonly' => '',
-            'last_organisation_ID' => '',
+            'organisationID_readonly' => '',
+            'last_organisationID' => '',
             'active' => 'user',
         );
         
@@ -80,20 +80,20 @@ class UserController implements ControllerProviderInterface
         $access['type_user'] = 'User Details';
 
         $where = array('is_deleted != 1');
-        if (!empty($db_user['organisation_ID'])) {
-            $uoid = $db_user['organisation_ID'];
-            $where[] = "organisation_ID=$uoid";
+        if (!empty($db_user['organisationID'])) {
+            $uoid = $db_user['organisationID'];
+            $where[] = "organisationID=$uoid";
             $access['hide_add_user'] = $db_user['role'] == 3 ? 'hidden' : '';
-            $access['last_organisation_ID'] = $db_user['organisation_ID'];
-            $access['organisation_ID_readonly'] = 'readonly';
+            $access['last_organisationID'] = $db_user['organisationID'];
+            $access['organisationID_readonly'] = 'readonly';
             $access['uribase'] = "/organisation/$uoid/employee";
             $access['user_type'] = 'Employee';
             unset($roles[1]);
         } elseif ($oid) {
-            $where[] = "organisation_ID=$oid";
+            $where[] = "organisationID=$oid";
             $access['uribase'] = "/organisation/$oid/employee";
             $access['user_type'] = 'Employee';
-            $access['organisation_ID_readonly'] = 'readonly';
+            $access['organisationID_readonly'] = 'readonly';
             unset($roles[1]);
         }
 
@@ -116,11 +116,11 @@ class UserController implements ControllerProviderInterface
         } elseif ($id) {
             $app->abort(404, "User $id does not exist.");
         }
-        if (!empty($db_user['organisation_ID'])) {
+        if (!empty($db_user['organisationID'])) {
             foreach ($users as $user) {
                 $uid = $user->getId();
-                $access['users'][$uid]['employee_ID_readonly'] = 'readonly';
-                $access['users'][$uid]['organisation_ID_readonly'] = 'readonly';
+                $access['users'][$uid]['employeeID_readonly'] = 'readonly';
+                $access['users'][$uid]['organisationID_readonly'] = 'readonly';
                 if ($db_user['role'] == 3) {
                     unset($roles[2]);
                     $access['users'][$uid]['hide_edit_user'] = ($db_user['id'] === $uid) ? '' : 'hidden';
@@ -186,7 +186,7 @@ class UserController implements ControllerProviderInterface
         }
         $access['type_oper'] = 'Add';
         $user = array('probation_checked' => '');
-        $text = 'name email address password role employee_ID organisation_ID birthdate probation telephone';
+        $text = 'name email address password role employeeID organisationID birthdate probation telephone';
         foreach (explode(' ', $text) as $key) {
             $user[$key] = '';
         }
@@ -195,10 +195,10 @@ class UserController implements ControllerProviderInterface
             $access['user']["{$k}_disabled"] = '';
         }
         if ($oid) {
-            $access['user']['organisation_ID'] = $oid;
-            $access['user']['organisation_ID_disabled'] = 'disabled';
+            $access['user']['organisationID'] = $oid;
+            $access['user']['organisationID_disabled'] = 'disabled';
         } elseif ($access['logged']['role'] == ROLE_IS_EMPLOYER) {
-            $access['user']['organisation_ID'] = $access['logged']['organisation_ID'];
+            $access['user']['organisationID'] = $access['logged']['organisationID'];
         }
         return $app['twig']->render('add_user.html.twig', $app['app.access'] = $access);
         return __FUNCTION__ . ' new user';
@@ -230,7 +230,7 @@ class UserController implements ControllerProviderInterface
         }
         $access = self::access($req, $app, $id, $oid);
         $access['type_oper'] = 'Edit';
-        if ($access['logged']['organisation_ID']) {
+        if ($access['logged']['organisationID']) {
             if ($access['logged']['role'] == ROLE_IS_EMPLOYEE && $access['logged']['id'] != $id) {
                 $app->abort(404, "User not allowed");
             }
@@ -258,7 +258,7 @@ class UserController implements ControllerProviderInterface
             $access['type_oper'] = 'Delete';
             $access['type_user'] = 'User Details';
             if ($oid) {
-                $access['user']['organisation_ID'] = $oid;
+                $access['user']['organisationID'] = $oid;
             }
             $access['user_delete'] = "/user/delete/$id";
             return $app['twig']->render('delete_user.html.twig', $app['app.access'] = $access);
@@ -287,7 +287,7 @@ class UserController implements ControllerProviderInterface
             $access['type_oper'] = 'Show';
             $access['type_user'] = 'User Details';
             if ($oid) {
-                $access['user']['organisation_ID'] = $oid;
+                $access['user']['organisationID'] = $oid;
             }
             return $app['twig']->render('show_user.html.twig', $app['app.access'] = $access);
         }

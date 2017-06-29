@@ -25,8 +25,8 @@ class ContactController implements ControllerProviderInterface
             'error'         => $app['security.last_error']($req),
             'last_username' => $app['session']->get('_security.last_username'),
             'user_type' => 'User','user_add' => '/user/add','hide_add_user' => '',
-            'organisation_ID_readonly' => '',
-            'last_organisation_ID' => '',
+            'organisationID_readonly' => '',
+            'last_organisationID' => '',
             'active' => 'contact',
         );
         
@@ -65,14 +65,13 @@ class ContactController implements ControllerProviderInterface
                 //echo "message:<pre>",print_r($message,1),"</pre><br/>\n";
                 $ret = $app['mailer']->send($message);*/
                 $ret = send_mail($app, $subject, $myform['message'], $to, "$from");
-				if($ret)
-				{
-					$message = "Hello {$myform['name']}, your message from {$myform['email']} has been sent.";
-					$app['session']->getFlashBag()->add('success', $message);
-				} else {
-					$message = "Hello {$myform['name']}, your message from {$myform['email']} has not been sent.";
-					$app['session']->getFlashBag()->add('error', $message);
-				}
+                if ($ret) {
+                    $message = "Hello {$myform['name']}, your message from {$myform['email']} has been sent.";
+                    $app['session']->getFlashBag()->add('success', $message);
+                } else {
+                    $message = "Hello {$myform['name']}, your message from {$myform['email']} has not been sent.";
+                    $app['session']->getFlashBag()->add('error', $message);
+                }
             } else {
                 $message = 'The contact '.print_r($form, 1).' is not valid';
                 $app['session']->getFlashBag()->add('warning', $message);
