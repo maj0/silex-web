@@ -19,14 +19,15 @@
     }
 .control-label { text-align: left; }
   </style>
-<link rel="stylesheet" type="text/css" href="/css/style.css"/>
+<link rel="stylesheet" href="/css/style.css"/>
+<link rel="stylesheet" href="/css/navbar-fixed-top.css" >
 <!--script src="https://cdn.jsdelivr.net/jquery/1.12.4/jquery.min.js"></script-->
 <script src="https://cdn.jsdelivr.net/jquery.validation/1.15.1/jquery.validate.min.js"></script>
 <script src="/js/normalize.js"></script>
 </head>
 <body>
 {% set active = active|default(null) %}
-<nav class="navbar navbar-inverse">
+<nav class="navbar navbar-inverse navbar-fixed-top">
   <div class="container-fluid">
     <div class="navbar-header">
       <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
