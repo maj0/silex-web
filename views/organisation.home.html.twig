@@ -1,4 +1,6 @@
-<h1>Organisations</h1>
+<div id="main" role="main" class="container">
+<div class="jumbotron">
+<h2>Organisations</h2>
 <table>
     {% for organisation in organisations %}
         <tr>
@@ -11,3 +13,5 @@
 <br/><a href='/organisation/add' class="{{ hide_add_organisation|e }}">Add Organisation</a>&nbsp;	
 <br/><a href='/user'>Users</a>
 <br/><br/><a href="{{ path('admin_logout') }}">Logout</a>
+</div><!-- end-jumbotron -->
+</div><!-- end-container -->

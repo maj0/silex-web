@@ -17,8 +17,6 @@ $app = MyApp\SilexApplication::instance();
 
 require_once __DIR__.'/../src/routes.php';
 
-try {
-    $app->run();
-} catch (Exception $e) {
-    echo "Errror: $e<br/>\n";
-}
+
+$app->run();
+

@@ -1,11 +1,14 @@
 <script>
 function formCancel() {
 //alert('form cancel');
-document.location = "{{ _SERVER.HTTP_REFERER }}"
 }
 </script>
+<div id="main" role="main" class="container">
+<div class="jumbotron">
 
 {% include 'common/form_user.html.twig' %}
 
+</div><!-- end-jumbotron -->
 </div><!-- end-container -->
+
 <script src="/js/validate-form.js"></script>

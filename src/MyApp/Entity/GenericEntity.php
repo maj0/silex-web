@@ -14,6 +14,10 @@ class GenericEntity implements \ArrayAccess
      public function __call($k,$v=false) {
         return isset($this->data[$k]) ? $this->data[$k] : $this->data[$k] = $v;
     }*/
+    public function __construct($array = array())
+    {
+        $this->data = $array;
+    }
     
     public function offsetExists($offset)
     {

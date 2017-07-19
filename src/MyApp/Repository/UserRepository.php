@@ -126,6 +126,7 @@ class UserRepository implements RepositoryInterface
                 ->setFirstResult($offset)
                 ->orderBy('o.' . key($orderBy), current($orderBy));
         }
+        //echo "SQL=" . $queryBuilder->getSQL() . "<br\>\n";
         $statement = $queryBuilder->execute();
         $userData = $statement->fetchAll();
 
@@ -147,7 +148,7 @@ class UserRepository implements RepositoryInterface
      */
     protected function buildUser($userData)
     {
-        $user = new User();
+        $user = new User($userData);
         $user->setId($userData['id']);
         $user->setName($userData['name']);
         $user->setEmail($userData['email']);

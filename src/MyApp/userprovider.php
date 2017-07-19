@@ -32,8 +32,11 @@ class UserProvider implements UserProviderInterface
         
         //$user = User::getUser($username);
         if (empty($user)) {
+            $app = SilexApplication::instance();
+            $message = sprintf('Username "%s" does not exist.', $username);
+            $app['session']->getFlashBag()->add('error', $message);
             //error_log("login user $username not exist");
-            throw new UsernameNotFoundException(sprintf('Username "%s" does not exist.', $username));
+            throw new UsernameNotFoundException($message);
         }
         
         //error_log("login user $username exist");

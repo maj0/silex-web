@@ -26,24 +26,34 @@ $app->get('/js/{scriptName}', function ($scriptName) {
     exit;
 }); // define script action
 
-$app->get('/login', 'MyApp\SilexApplication::login');
+$app->get('/login', 'MyApp\SilexApplication::login')->bind('login');
+$app->get('/logout', 'MyApp\SilexApplication::logout')->bind('logout');
 $app->mount('/organisation', new MyApp\Controller\OrganisationController());
 $app->mount('/organisation/{oid}/employee', new MyApp\Controller\UserController());
 $app->mount('/user', new MyApp\Controller\UserController());
 $app->mount('/search', new MyApp\Controller\SearchController());
 $app->mount('/contact', new MyApp\Controller\ContactController());
 
-$app->get('/about', 'MyApp\SilexApplication::about'); // define about action
-$app->get('/', 'MyApp\SilexApplication::home'); // define default action
-
+$app->get('/about', 'MyApp\SilexApplication::about')->bind('about'); // define about action
+$app->get('/', 'MyApp\SilexApplication::home')->bind('homepage'); // define default action
+    
 
 $app->error(function (\Exception $e, Request $request, $code) use ($app) {
+	$access = array(
+		//'last_username' => $username,
+		'code' => $code,
+		'error' => $e->getMessage(),
+	);
+	
+	$access = array_merge($app['app.access'], $access);
+	$app['request'] = $request;
+	$access['app'] = $app;
 
     if ($app['debug']) {
-        return;
+		return;      
     }
-
-
+	//return new Response($app['twig']->render('Exception/error404.html.twig', $access), $code);
+	//return new Response($app['twig']->render('errors/404.html.twig', $access), $code);
 
     // 404.html, or 40x.html, or 4xx.html, or error.html
 
@@ -61,7 +71,7 @@ $app->error(function (\Exception $e, Request $request, $code) use ($app) {
 
 
 
-    return new Response($app['twig']->resolveTemplate($templates)->render(array('code' => $code)), $code);
+    return new Response($app['twig']->resolveTemplate($templates)->render($access), $code);
 
 });
 

@@ -5,6 +5,8 @@ document.location = "{{ _SERVER.HTTP_REFERER }}";
 }
 </script>
 <div id="main" role="main" class="container">
+<div class="jumbotron">
+
     {% set alertTypeAvaillable = [ 'info', 'success', 'warning', 'error'] %}
     {% for alert in alertTypeAvaillable %}
         {% for message in app.session.getFlashBag.get(alert) %}
@@ -15,22 +17,38 @@ document.location = "{{ _SERVER.HTTP_REFERER }}";
         {% endfor %}
     {% endfor %}
 
-    <h1>{{ title }}</h1>
-
+<h2>{{ title }}</h2>
 <form name="organisation" method="post">
  <div id="organisation">
   <div class="control-group">
    <label class="control-label required" for="organisation_name">Name</label>
-   <div class="controls"><input type="text" id="organisation_name" name="organisation[name]" value="{{ organisation.name }}" required="required"/></div></div>
+   <div class="controls">
+   <input type="text" id="organisation_name" name="organisation[name]" 
+   value="{% if organisation %} {{ organisation.name }} {% endif %}" 
+   required="required"  disabled/></div></div>
   <div class="control-group">
-   <label class="control-label required" for="organisation_address">Address</label><div class="controls"><textarea id="organisation_address" name="organisation[address]" required="required">{{ organisation.address }}</textarea></div></div>
+   <label class="control-label required" for="organisation_address">Address</label>
+   <div class="controls">
+   <textarea id="organisation_address" name="organisation[address]" required="required" disabled>
+   {% if organisation %} {{ organisation.address }} {% endif %}
+   </textarea></div></div>
   <div class="control-group">
    <label class="control-label" for="organisation_telephone">Telephone</label>
-   <div class="controls"><input type="text" id="organisation_telephone" name="organisation[telephone]" value="{{ organisation.telephone }}"/></div></div>
+   <div class="controls"><input type="text" id="organisation_telephone" name="organisation[telephone]" 
+   value="{% if organisation %} {{ organisation.telephone }} {% endif %}"  disabled
+   /></div></div>
   <div>
-   <button type="submit" id="organisation_save" name="organisation[save]" onclick="return confirm('Are you sure to delete organisation with id {{ organisation.id|e }}')">Delete</button-->
-   <!--button type="reset" id="organisation_save" name="organisation[cancel]" onclick="return formCancel()">Cancel</button>
+   <button type="submit" id="organisation_save" name="organisation[save]" 
+   {% if organisation %}
+   onclick="return confirm('Are you sure to delete organisation with id {{ organisation.id|e }}')"
+   {% else %}
+    disabled
+   {% endif%}
+   >Delete</button>
   </div>
  </div>
 </form>
-</div>
+
+</div><!-- end-jumbotron -->
+</div><!-- end-container -->
+

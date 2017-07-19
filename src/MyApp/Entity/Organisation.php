@@ -2,7 +2,7 @@
 
 namespace MyApp\Entity;
 
-class Organisation
+class Organisation extends GenericEntity
 {
     /**
      * Organisation id.

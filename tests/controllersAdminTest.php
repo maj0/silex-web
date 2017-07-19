@@ -79,6 +79,24 @@ class AdminControllerTest extends WebTestCase
         //$this->assertSame('Admin Dashboard', $crawler->filter('h1')->text());
     }
 
+    public function testSecuredUserAddDuplicat()
+    {
+        //error_log("IN ".__FUNCTION__);
+        $client = $this->createClient();
+        $client->followRedirects(true);
+        $this->logIn($client);
+        $crawler = $client->request('POST', '/admin/login_check', array('_username' => 'admin@mifon.tk', '_password' => 'A1b2c#d0'));
+		$crawler = $client->request('POST', '/user/add', array('user' => array(
+			'name' => 'admin',
+			'address' => 'UK',
+			'email' => 'admin@mifon.tk',
+			'role' => 1,
+			'password' => 'A1b2c#d0'
+		)));
+        $this->assertSame(Response::HTTP_OK, $client->getResponse()->getStatusCode());
+        $this->assertSame('The user admin already exist.', trim($crawler->filter('div.alert')->text()));
+    }
+
 
     public function testSecuredUserEdit()
     {

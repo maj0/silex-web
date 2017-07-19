@@ -1,11 +1,26 @@
-<h1>Login</h1>
+<div id="main" role="main" class="container">
+<div id="main" role="main" class="jumbotron">
+    <h2>Login</h2>
+	
+	{% set alertTypeAvaillable = [ 'info', 'success', 'warning', 'error'] %}
+	{% for alert in alertTypeAvaillable %}
+		{% for message in app.session.getFlashBag.get(alert) %}
+			<div class="alert alert-{{ alert }}" >
+				<button class="close" data-dismiss="alert">×</button>
+				{{ message|trans }}
+			</div>
+		{% endfor %}
+	{% endfor %}
+
 <br/>
 <form action="{{ path('admin_login_check') }}" method="post">
     {{ error }}
 	<table>
-    <tr><td><lable>Username:</label><td><input type="text" name="_username" value="{{ last_username }}" />
-    <tr><td><lable>Password:</label><td><input type="password" name="_password" value="" />
-    <tr><td align=center colspan="2"><input type="submit" value="Login"/>
+    <tr><td><lable class=" required" for="_username">Useremail:</label><td><input type="email" name="_username" value="{{ last_username }}" required="required"/>
+    <tr><td><lable class=" required">Password:</label><td><input type="password" name="_password" value="" required="required"/>
+    <tr><td align=center colspan="2"><button type="submit" class="btn btn-info">Login</button>
 	</table>
 </form>
 <br/>
+</div><!-- end-jumbotron -->
+</div><!-- end-container -->

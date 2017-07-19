@@ -1,5 +1,6 @@
-<h1>Users</h1>
-<div class='container'>
+<div id="main" role="main" class="container">
+<div class="jumbotron">
+<h2>Users</h2>
 
 {% include 'users.html.twig' %}
 {% set active = 'user' %}
@@ -9,5 +10,6 @@
 <br/>
 <a href="/organisation">Organisations</a>
 <br/><br/><a href="{{ path('admin_logout') }}">Logout</a>
-</div><!-- end-container -->
 <br/>
+</div><!-- end-jumbotron -->
+</div><!-- end-container -->

@@ -79,12 +79,12 @@ class SearchRepository /*implements RepositoryInterface*/
 
         $where = join(' AND ', $whereCond);
         $queryBuilder
-            ->select('o.*')
-            ->from('user', 'o')
+            ->select('u.*')
+            ->from('user', 'u')
             ->where($where)
             ->setMaxResults($limit)
             ->setFirstResult($offset)
-            ->orderBy('o.' . key($orderBy), current($orderBy));
+            ->orderBy('u.' . key($orderBy), current($orderBy));
         $statement = $queryBuilder->execute();
         $searchData = $statement->fetchAll();
 

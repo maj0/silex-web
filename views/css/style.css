@@ -51,7 +51,7 @@ form button {
   margin-top: 10px;
   cursor: pointer;
 }
-form .error {
+form .error, .alert-error, .alert-danger {
   color: #ff0000;
 }
 

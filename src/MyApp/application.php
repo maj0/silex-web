@@ -16,7 +16,7 @@ class SilexApplication extends \Silex\Application
         static $app;
         if (empty($app)) {
             $app = new static();
-            $app['debug'] = true;
+            $app['debug'] = isset($_REQUEST['debug']) ? $_REQUEST['debug'] : false;
             $config = require_once(__DIR__ . '/../../config/config.php');
             $new_config = function ($section, $options) use ($app, $config) {
                 $app[$section] = isset($app[$section]) ? array_merge($app[$section], $options) : $options;
@@ -87,7 +87,7 @@ class SilexApplication extends \Silex\Application
                     'form' => array('login_path' => '/login', 'check_path' => '/admin/login_check'),
                     'logout' => array('logout_path' => '/admin/logout', 'invalidate_session' => true),
                     'users' => function () use ($app) {
-                        return new UserProvider($app['db']);
+                        return new UserProvider($app['db'], $app);
                     },
                 ),
             ));
@@ -124,11 +124,20 @@ class SilexApplication extends \Silex\Application
     {
         $request = Request::createFromGlobals();
         $last_username = $app['session']->get('_security.last_username');
+        $last_error = $app['security.last_error']($request);
+        if (!empty($last_error)) {
+            $app['session']->getFlashBag()->add('error', $last_error);
+        }
         //error_log("last_username is $last_username");
         return $app['twig']->render('login.html.twig', $app['app.access'] = array_merge($app['app.access'], array(
-            'error'         => $app['security.last_error']($request),
+            'error'         => $last_error,
             'last_username' => $app['session']->get('_security.last_username'),
         )));
+    }
+	
+    public static function logout(Request $req, SilexApplication $app) /*use ($app)*/
+    {
+        return $app->redirect('/admin/logout');
     }
     
     public static function home(SilexApplication $app)

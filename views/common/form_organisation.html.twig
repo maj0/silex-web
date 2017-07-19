@@ -1,4 +1,6 @@
 <div id="main" role="main" class="container">
+<div class="jumbotron">
+
 	{% set alertTypeAvaillable = [ 'info', 'success', 'warning', 'error'] %}
 	{% for alert in alertTypeAvaillable %}
 		{% for message in app.session.getFlashBag.get(alert) %}
@@ -25,4 +27,6 @@
   </div>
  </div>
 </form>
-</div>
+
+</div><!-- end-jumbotron -->
+</div><!-- end-container -->

@@ -14,7 +14,7 @@ class ContactController implements ControllerProviderInterface
     public function connect(Application $app)
     {
         $factory = $app['controllers_factory'];
-        $factory->match('/', 'MyApp\Controller\ContactController::home')->bind('contact_home');
+        $factory->match('/', 'MyApp\Controller\ContactController::home')->bind('contact');
         return $factory;
     }
 

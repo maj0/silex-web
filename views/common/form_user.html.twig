@@ -1,4 +1,3 @@
-<div id="main" role="main" class="container">
 	{% set alertTypeAvaillable = [ 'info', 'success', 'warning', 'error'] %}
 	{% for alert in alertTypeAvaillable %}
 		{% for message in app.session.getFlashBag.get(alert) %}
@@ -9,7 +8,7 @@
 		{% endfor %}
 	{% endfor %}
 
-<h1>{{ type_oper }} {{ user_type }}</h1>
+<h2>{{ type_oper }} {{ user_type }}</h2>
 <form name="user" method="post">
  <div id="user">
   <div class="control-group">
@@ -44,7 +43,13 @@
 	<div class="controls"><input type="text" id="user_birthdate" name="user[birthdate]" value="{{ user.birthdate }}"/></div></div>
    <div class="control-group">
     <label class="control-label" for="user_probation">Probation</label>
-	<div class="controls"><input type="checkbox" id="user_probation" name="user[probation]" value="1" {{ user.probation_checked }}/></div></div>
+	<div class="controls">
+	  <input type="checkbox" id="user_probation" name="user[probation]" value="1" 
+		  {% if user.probation %}
+			checked
+		  {% endif %}
+	  />
+	</div></div>
 	<div class="control-group">
 	 <label class="control-label" for="user_password">Password</label>
 	 <div class="controls"><input type="password" id="user_password" name="user[password]" value="{{ user.password }}" required="required"/></div></div>
@@ -52,7 +57,5 @@
 	  <button type="submit" id="user_save" name="user[save]">Save</button>
 	  <!--button type="reset" id="user_cancel" name="user[cancel]" onclick="return formCancel()">Cancel</button-->
 	</div>
- </div>
+ </div><!-- end user -->
 </form>
-
-</div>

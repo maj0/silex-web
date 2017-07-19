@@ -21,7 +21,7 @@ class OrganisationController implements ControllerProviderInterface
     public function connect(Application $app)
     {
         $factory = $app['controllers_factory'];
-        $factory->get('/', 'MyApp\Controller\OrganisationController::home')->bind('organisation_home');
+        $factory->get('/', 'MyApp\Controller\OrganisationController::home')->bind('organisation');
         $factory->match('add', 'MyApp\Controller\OrganisationController::doAdd');
         $factory->match('edit/{organisation}', 'MyApp\Controller\OrganisationController::doEdit')
                 ->bind('organisation_edit')
@@ -144,29 +144,39 @@ class OrganisationController implements ControllerProviderInterface
             foreach (explode(' ', 'name address telephone') as $key) {
                 $organisation[$key] = '';
             }
-            $access['organisation'] = $organisation;
-            $access['organisation_add'] = '/organisation/add';
-            $access['form'] = $form->createView();
             //file_put_contents("myform.txt",$access['form']);
             //echo "<pre>", print_r($form,1),"</pre>\n";
-            return $app['twig']->render('add_organisation.html.twig', $app['app.access'] = $access);
         } else {
             $form->bind($req);
             if ($form->isValid()) {
-                $app['repository.organisation']->save($organisation);
-                $message = 'The organisation ' . $organisation->getName() . ' has been saved.';
-                $app['session']->getFlashBag()->add('success', $message);
+                $where = "name = '" . $organisation->getName() . "'";
+                $results = $app['repository.organisation']->findAll(1, 0, array($where));
+                if (empty($results)) {
+                   //exit(0);
+                    $app['repository.organisation']->save($organisation);
+                    $message = 'The organisation ' . $organisation->getName() . ' has been saved.';
+                    $app['session']->getFlashBag()->add('success', $message);
+                    $id = $organisation->getId();
+                    $access = self::access($req, $app, $id);
+                    $access['type_oper'] = 'Edit';
+                    $access['type_organisation'] = 'Organisation Details';
+                    $access['organisation_edit'] = '/organisation/edit/'.$id;
+                    $access['title'] = "Edit Organisation";
+                    $access['form'] = $form->createView();
+                    return $app['twig']->render('edit_organisation.html.twig', $app['app.access'] = $access);
+                } else {
+                    $message = 'The organisation ' . $organisation->getName() . ' alread exist.';
+                    $app['session']->getFlashBag()->add('error', $message);
+                }
+            } else {
+                $message = 'The organisation ' . $organisation->getName() . ' has not been saved.';
+                $app['session']->getFlashBag()->add('warrning', $message);
             }
-            $id = $organisation->getId();
-            $access = self::access($req, $app, $id);
-
-            $access['type_oper'] = 'Edit';
-            $access['type_organisation'] = 'Organisation Details';
-            $access['organisation_edit'] = '/organisation/edit/'.$id;
-            $access['title'] = "Edit Organisation";
-            $access['form'] = $form->createView();
-            return $app['twig']->render('edit_organisation.html.twig', $app['app.access'] = $access);
         }
+        $access['organisation'] = $organisation;
+        $access['organisation_add'] = '/organisation/add';
+        $access['form'] = $form->createView();
+        return $app['twig']->render('add_organisation.html.twig', $app['app.access'] = $access);
     }
 
     /*
@@ -184,9 +194,16 @@ class OrganisationController implements ControllerProviderInterface
             //echo "<pre>",print_r($org, 1),"</pre><br>\n";
             $form->bind($req);         // transfer data to form object from request
             if ($form->isValid()) {   // validate data with our defined constraints
-                $app['repository.organisation']->save($organisation);
-                $message = 'The organisation ' . $organisation->getName() . ' has been saved.';
-                $app['session']->getFlashBag()->add('success', $message);
+                $where = "name = '" . $organisation->getName() . "'";
+                $results = $app['repository.organisation']->findAll(1, 0, array($where));
+                if (empty($results)) {
+					$app['repository.organisation']->save($organisation);
+					$message = 'The organisation ' . $organisation->getName() . ' has been saved.';
+					$app['session']->getFlashBag()->add('success', $message);
+				} else {
+					$message = 'The organisation ' . $organisation->getName() . ' is not unique.';
+					$app['session']->getFlashBag()->add('error', $message);
+				}
             }
         }
         $id = $organisation->getId();
@@ -210,30 +227,42 @@ class OrganisationController implements ControllerProviderInterface
     */
     public function doDelete(Request $req, Application $app, $id = 0)
     {
+        $access = self::access($req, $app, $id);
         if ($req->isMethod('GET')) {
-            $access = self::access($req, $app, $id);
             if ($access['logged']['role'] != ROLE_IS_ADMIN) {
                 $app->abort(404, "User not allowed.");
             }
-            $access['type_oper'] = 'Delete';
-            $access['type_organisation'] = 'Organisation Details';
-            $access['organisationID'] = $id;
-            $access['organisation'] = $app['repository.organisation']->find($id);
-            $access['organisation_delete'] = '/organisation/delete/'.$id;
-            $access['title'] = "Delete Organisation";
-            return $app['twig']->render('delete_organisation.html.twig', $app['app.access'] = $access);
         } else {
             $organisation = new Organisation();
             $organisation->setId($id);
-            try {
+            $result = $app['repository.organisation']->find($id);
+            //var_dump($result);exit(0);
+            if (empty($result)) {
+                $message = 'The organisation ' . $organisation->getName() . ' does not exist.';
+                $app['session']->getFlashBag()->add('error', $message);
+            } elseif (empty($result['is_deleted'])) {
                 $app['repository.organisation']->delete($organisation); // mark data for deletion
-                return "Deleted data successfully!";
-            } catch (\Exception $e) {
-                $msg = "Error: Delete not successfull";
-                error_log($msg ." cause " . $e->getMessage());
-                return $msg;
+                //return "Deleted data successfully!";
+                $message = 'The organisation ' . $organisation->getName() . ' has been deleted.';
+                $app['session']->getFlashBag()->add('success', $message);
+            } else {
+                $message = 'The organisation ' . $organisation->getName() . ' already deleted.';
+                $app['session']->getFlashBag()->add('error', $message);
             }
+
         }
+        $access['type_oper'] = 'Delete';
+        $access['type_organisation'] = 'Organisation Details';
+        $access['organisationID'] = $id;
+        $access['organisation'] = $app['repository.organisation']->find($id);
+
+        $access['organisation_delete'] = '/organisation/delete/'.$id;
+        $access['title'] = "Delete Organisation";
+        if (empty($access['organisation'])) {
+            $message = "The organisation $id does not exist.";
+            $app['session']->getFlashBag()->add('error', $message);
+        }
+        return $app['twig']->render('delete_organisation.html.twig', $app['app.access'] = $access);
     }
     /*
     * render show page of organisation

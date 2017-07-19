@@ -18,7 +18,7 @@ class UserController implements ControllerProviderInterface
     public function connect(Application $app)
     {
         $factory = $app['controllers_factory'];
-        $factory->get('/', 'MyApp\Controller\UserController::home')->bind('user_home');
+        $factory->get('/', 'MyApp\Controller\UserController::home')->bind('user');
         $factory->match('add', 'MyApp\Controller\UserController::doAdd');
         $factory->match('edit/{id}', 'MyApp\Controller\UserController::doEdit');
         $factory->match('delete/{id}', 'MyApp\Controller\UserController::doDelete');
@@ -50,7 +50,7 @@ class UserController implements ControllerProviderInterface
     */
     protected static function access($req, $app, $id = 0, $oid = 0)
     {
-        error_log("id=$id, oid=$oid");
+        //error_log("id=$id, oid=$oid");
         $username = $app['security.token_storage']->getToken()->getUser()->getUsername();
         $db_user = self::getUser($username, $app);
         //echo '<pre>'.print_r($db_user,1).'</pre>';
@@ -72,6 +72,7 @@ class UserController implements ControllerProviderInterface
              array('name' => 'employer', 'value' => 2, 'selected' => ''),
              array('name' => 'employee', 'value' => 3, 'selected' => ''),
         );
+		
         $offset = 0;
         $limit = 20;
 
@@ -107,10 +108,11 @@ class UserController implements ControllerProviderInterface
             foreach ($user as $k => $v) {
                 $access['user']["{$k}_disabled"] = '';
             }
-            foreach ($roles as &$role) {
+            foreach ($roles as $k => &$role) {
                 $rv = $user->getRole();
                 if ($role['value'] == $rv) {
-                    $role['selected'] = 'selected';
+                    $roles[$k]['selected'] = 'selected';
+					//error_log("role selected k=$k, v=$rv");
                 }
             }
         } elseif ($id) {
@@ -167,39 +169,53 @@ class UserController implements ControllerProviderInterface
         if ($req->isMethod('POST')) {
             $form->bind($req);
             if ($form->isValid()) {
-                $app['repository.user']->save($user);
-                $message = 'The user ' . $user->getName() . ' has been saved.';
-                $app['session']->getFlashBag()->add('success', $message);
-                //return "Updated data successfully!";
-                $access = self::access($req, $app, $user->getId(), $oid);
-                $access['type_oper'] = 'Add';
-                $access['form'] = $form->createView();
-                return $app['twig']->render('edit_user.html.twig', $app['app.access'] = $access);
+                $where = "email = '" . $user->getEmail() . "'";
+                $results = $app['repository.user']->findAll(1, 0, array($where));
+                if (empty($results)) {
+                    $app['repository.user']->save($user);
+                    $message = 'The user ' . $user->getName() . ' has been saved.';
+                    $app['session']->getFlashBag()->add('success', $message);
+                    //return "Updated data successfully!";
+                    $access = self::access($req, $app, $user->getId(), $oid);
+                    $access['type_oper'] = 'Edit';
+                    $access['form'] = $form->createView();
+                    return $app['twig']->render('edit_user.html.twig', $app['app.access'] = $access);
+                } else {
+                    $message = 'The user ' . $user->getName() . ' already exist.';
+                    $app['session']->getFlashBag()->add('error', $message);
+                    $access = self::access($req, $app, $id, $oid);
+                    $access['user'] = $user;
+                }
             } else {
-                $message = 'The user ' . $user->getName() . ' has not been saved.';
+				$access = self::access($req, $app, $id, $oid);
+				$access['user'] = $user;
+                $message = 'The user form ' . $user->getName() . ' is not valid.';
                 $app['session']->getFlashBag()->add('warning', $message);
             }
-        }
-        $access = self::access($req, $app, $id, $oid);
-        if ($access['logged']['role'] == ROLE_IS_EMPLOYEE) {
-            $app->abort(404, "User not allowed.");
+        } else {
+            $access = self::access($req, $app, $id, $oid);
+            if ($access['logged']['role'] == ROLE_IS_EMPLOYEE) {
+                $app->abort(404, "User not allowed.");
+            }
+            $user = array('probation_checked' => '');
+            $text = 'name email address password role employeeID organisationID birthdate probation telephone';
+            foreach (explode(' ', $text) as $key) {
+                $user[$key] = '';
+            }
+            $access['user'] = $user;
+            foreach ($user as $k => $v) {
+                $access['user']["{$k}_disabled"] = '';
+            }
+            if ($oid) {
+                $access['user']['organisationID'] = $oid;
+                $access['user']['organisationID_disabled'] = 'disabled';
+            } elseif ($access['logged']['role'] == ROLE_IS_EMPLOYER) {
+                $access['user']['organisationID'] = $access['logged']['organisationID'];
+            }
         }
         $access['type_oper'] = 'Add';
-        $user = array('probation_checked' => '');
-        $text = 'name email address password role employeeID organisationID birthdate probation telephone';
-        foreach (explode(' ', $text) as $key) {
-            $user[$key] = '';
-        }
-        $access['user'] = $user;
-        foreach ($user as $k => $v) {
-            $access['user']["{$k}_disabled"] = '';
-        }
-        if ($oid) {
-            $access['user']['organisationID'] = $oid;
-            $access['user']['organisationID_disabled'] = 'disabled';
-        } elseif ($access['logged']['role'] == ROLE_IS_EMPLOYER) {
-            $access['user']['organisationID'] = $access['logged']['organisationID'];
-        }
+        $access['form'] = $form->createView();
+
         return $app['twig']->render('add_user.html.twig', $app['app.access'] = $access);
         return __FUNCTION__ . ' new user';
     }

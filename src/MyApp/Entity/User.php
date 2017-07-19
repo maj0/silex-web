@@ -177,6 +177,7 @@ class User extends GenericEntity
     {
         return empty($this->probation) ? false : true;
     }
+    
 
     public function setProbation($probation)
     {

@@ -18,7 +18,7 @@ class SearchController implements ControllerProviderInterface
     public function connect(Application $app)
     {
         $factory = $app['controllers_factory'];
-        $factory->match('/', 'MyApp\Controller\SearchController::home');
+        $factory->match('/', 'MyApp\Controller\SearchController::home')->bind('search');
         return $factory;
     }
 
@@ -51,9 +51,6 @@ class SearchController implements ControllerProviderInterface
         if (empty($db_user)) {
             $app->abort(404, "User $id does not exist.");
         }
-        if ($db_user['role'] != ROLE_IS_ADMIN) {
-            $app->abort(404, "User not allowed!");
-        }
         $search = new Search();
         //$form = $app['form.factory']->create(SearchType::class, $search);
         $form = $app['form.factory']->createBuilder(Type\FormType::class, $search)
@@ -68,9 +65,15 @@ class SearchController implements ControllerProviderInterface
                 $name = $_REQUEST['search']['name'];
                 //$where = array("name like '%" . $search->getName() . "%'");
                 $where = array("name like '%" . $name . "%'");
-                $results  = $app['repository.search']->findAll(10, 0, $where);
+                if ($db_user['role'] != ROLE_IS_ADMIN) {
+                    //$app->abort(404, "User not allowed!");
+                    $where[] = "OrganisationID = {$db_user['organisationID']}";
+                    $results  = $app['repository.search']->findAllUser(100, 0, $where);
+                } else {
+                    $results  = $app['repository.search']->findAll(100, 0, $where);
+                }
                 $access['results'] = $results;
-                $message = "The search {$myform['name']} has found " . count($results);
+                $message = "The search {$myform['name']} has found " . count($results) . " records";
                 $app['session']->getFlashBag()->add('success', $message);
                 return $app['twig']->render('results.html.twig', $app['app.access'] = $access);
             } else {

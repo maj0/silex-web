@@ -142,7 +142,7 @@ class OrganisationRepository implements RepositoryInterface
      */
     protected function buildOrganisation($organisationData)
     {
-        $organisation = new Organisation();
+        $organisation = new Organisation($organisationData);
         $organisation->setId($organisationData['id']);
         $organisation->setName($organisationData['name']);
         $organisation->setAddress($organisationData['address']);

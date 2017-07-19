@@ -4,7 +4,7 @@
 **/
 function fixWidth() {
   //alert("This is the first.");
-  var aInputs = $('input');
+  var aInputs = $('input[type=text]');
   if(aInputs.length) {
 	  //alert('color='+$(aInputs[0]).css('offset-width'));
 	  var oInput = $(aInputs[0]);
@@ -14,6 +14,14 @@ function fixWidth() {
 		  $(this).css('color', oInput.css('color'));
 	  });
   }
+  $('#emptyHeader').each(function(index) {
+	  $(this).css('height',$('nav')[0].offsetHeight);
+	  //alert('height'+$('footer')[0].offsetHeight);
+  });
+  $('#emptyFooter').each(function(index) {
+	  $(this).css('height',$('footer')[0].offsetHeight);
+	  //alert('height'+$('footer')[0].offsetHeight);
+  });
 }
 
 /*
